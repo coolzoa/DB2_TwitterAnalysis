@@ -1,0 +1,40 @@
+ssh localhost
+
+#para solucionar problema de permiso de archivo python
+chmod +x mapperTweets.py
+chmod +x reducerTweets.py
+
+#para solucionar problema de connection refused
+sudo mkdir -p /app/hadoop/tmp
+sudo chown hduser:1234 /app/hadoop/tmp
+sudo chmod 750 /app/hadoop/tmp
+hadoop namenode -format
+
+#iniciar 
+su hduser
+ssh localhost
+start-dfs.sh
+start-yarn.sh
+
+
+#corrida map/reduce local
+cat datos.txt | ./mapperTweets.py | sort | ./reducerTweets.py
+
+#hadoop
+#Crear directorio dentro de hadoop en caso de primera vez 
+hdfs dfs -mkdir -p /user/hduser
+
+#crear directorio analisis donde se va a usar para correr el map reduce
+hadoop fs -mkdir analisis
+hadoop fs -put datos.txt analisis
+
+#comando de map reduce
+hadoop jar $HADOOP_PREFIX/share/hadoop/tools/lib/hadoop-streaming-2.7.3.jar -input analisis/datos.txt -output output -mapper mapperTweets.py -reducer reducerTweets.py
+
+#eliminar archivo output en caso de querer correr el mismo job con los mismos archivos
+hadoop fs -rmr /user/hduser/output
+
+#terminar y cerrar todo
+stop-dfs.sh
+stop-yarn.sh
+exit

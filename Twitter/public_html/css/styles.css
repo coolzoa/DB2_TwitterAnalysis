@@ -1,0 +1,30 @@
+
+body {
+	background-color: white;
+}
+
+h1 {
+	color: lightblue;
+	text-align: center;
+	font-size: 300%;
+}
+
+
+p {
+	font-size: 120%;
+	text-align: center;
+}
+
+.actualTitle {
+	text-align: center;
+}
+
+#sideMenu, #upperFilter {
+	text-align: center;
+}
+
+
+
+
+
+
